@@ -10,17 +10,19 @@ class LibraryManager {
   List<Author> authors = [];
   List<Member> members = [];
 
-  // add a new book to the list
+// --------------------------Books----------------------------------------
+
+  // add new book to the list
   void addBook(Book book) {
     books.add(book);
   }
 
-  // return a list of book
+  // view a list of book
   List<Book> viewAllBooks() {
     return books;
   }
 
-  // identify a bok by using sbin
+  // update a book by using sbin
   void updateBook(String isbn, Book updateBook) {
     for (var i = 0; i < books.length; i++) {
       if (books[i].isbn == isbn) {
@@ -35,12 +37,12 @@ class LibraryManager {
     books.removeWhere((book) => book.isbn == isbn);
   }
 
-  // search book by author
-  List<Book> searchBooks({
-    String? title,
-  }) {
+  // search book by title or author
+  List<Book> searchBooks({String? title, String? author}) {
     return books.where((book) {
-      return (title == null || book.title.contains(title));
+      return (title == null ||
+          book.title.contains(title) && author == null ||
+          book.author.contains(author!));
     }).toList();
   }
 
@@ -78,10 +80,9 @@ class LibraryManager {
     }
     print('Book not found.');
   }
+  // --------------------------Author----------------------------------------
 
-  // Author CRUD Operations
-
-  // Add a new author to the list
+  // Add new author to list
   void addAuthor(Author author) {
     authors.add(author);
   }
@@ -106,8 +107,7 @@ class LibraryManager {
     authors.removeWhere((author) => author.name == name);
   }
 
-  // Member CRUD Operations
-
+  // --------------------------Member----------------------------------------
   // Add a new member to the list
   void addMember(Member member) {
     members.add(member);
@@ -128,7 +128,7 @@ class LibraryManager {
     print('Member with ID $memberId not found.');
   }
 
-  // Delete a member identified by their member ID
+  // Delete a member by their member ID
   void deleteMember(String memberId) {
     members.removeWhere((member) => member.memberId == memberId);
   }
@@ -140,15 +140,9 @@ class LibraryManager {
     }).toList();
   }
 
+  // Asyncronous Operations
 
-
-
-
-
-
-
-
-  // Save data to local files
+  // Save data to files
   Future<void> saveData() async {
     try {
       final bookFile = File('books.json');
@@ -163,7 +157,7 @@ class LibraryManager {
     }
   }
 
-  // Load data from local files
+  // Load data from files
   Future<void> loadData() async {
     try {
       final bookFile = File('books.json');
