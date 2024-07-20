@@ -1,13 +1,13 @@
 import 'dart:io';
-import 'author.dart';
-import 'member.dart';
-import 'book.dart';
 import 'LibraryManager.dart';
+import 'author.dart';
+import 'book.dart';
+import 'member.dart';
 
 void main() async {
   LibraryManager libraryManager = LibraryManager();
 
-  // load data at startup
+  // Load data at startup
   await libraryManager.loadData();
 
   while (true) {
@@ -53,7 +53,6 @@ void main() async {
         print(
             'Title: ${book.title}, Author: ${book.author}, Year: ${book.publicationYear}, ISBN: ${book.isbn}, Lent: ${book.isLent}, Due Date: ${book.dueDate}');
       }
-      ;
     } else if (choice == '3') {
       // Update Book
       print('Enter ISBN of the book for update: ');
@@ -109,8 +108,14 @@ void main() async {
       // View All Authors
       List<Author> authors = libraryManager.viewAllAuthors();
       for (var author in authors) {
-        print(
-            'Name: ${author.name}, Date of Birth:, Books Written: ${author.bookWritten}');
+        print('Name: ${author.name}, Books Written:');
+        for (var isbn in author.bookWritten) {
+          var book = libraryManager.books.firstWhere(
+              (book) => book.isbn == isbn,
+              orElse: () => Book('Unknown', 'Unknown', 0, 'Unknown'));
+          print(
+              '  Title: ${book.title}, Year: ${book.publicationYear}, ISBN: ${book.isbn}');
+        }
       }
     } else if (choice == '10') {
       // Update Author

@@ -1,5 +1,4 @@
-
-class Book{
+class Book {
   String title;
   String author;
   int publicationYear;
@@ -7,23 +6,24 @@ class Book{
   bool isLent;
   String dueDate;
 
-   Book(this.title, this.author, this.publicationYear, this.isbn, {this.isLent = false, this.dueDate = ''});
+  Book(this.title, this.author, this.publicationYear, this.isbn,
+      {this.isLent = false, this.dueDate = ''});
 
-   Map<String, dynamic> tojson() =>{
-    'title' : title,
-    'author' : author,
-    'publicationYear' : publicationYear,
-    'isbn' : isbn,
-    'isLent' : isLent,
-    'dueDate' : dueDate
-   };
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'author': author,
+        'publicationYear': publicationYear,
+        'isbn': isbn,
+        'isLent': isLent,
+        'dueDate': dueDate,
+      };
 
-   factory Book.fromJson(Map<String, dynamic> json) => Book(
-    json['title'],
-    json['author'],
-    json['publicationYear'],
-    json['isbn'],
-    isLent:json['isLent'],
-    dueDate:json['dueDate']
-    );
+  factory Book.fromJson(Map<String, dynamic> json) => Book(
+        json['title'],
+        json['author'],
+        json['publicationYear'],
+        json['isbn'],
+        isLent: json['isLent'],
+        dueDate: json['dueDate'],
+      );
 }

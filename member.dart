@@ -1,4 +1,3 @@
-
 class Member {
   String name;
   String memberId;
@@ -10,7 +9,7 @@ class Member {
       {'name': name, 'memberId': memberId, 'borrowed': borrowed};
 
   factory Member.fromJson(Map<String, dynamic> json) => Member(
-      json['name'], 
-      json['memberId'], 
+      json['name'],
+      json['memberId'],
       List<String>.from(json['borrowed']));
 }

@@ -10,47 +10,54 @@ class LibraryManager {
   List<Author> authors = [];
   List<Member> members = [];
 
-// --------------------------Books----------------------------------------
+  // --------------------------Books----------------------------------------
 
-  // add new book to the list
-  void addBook(Book book) {
+  // Add new book to the list
+    void addBook(Book book) {
     books.add(book);
+    
+    // Ensure author is added to the authors list
+    if (!authors.any((author) => author.name == book.author)) {
+      authors.add(Author(book.author, [book.isbn]));
+    } else {
+      authors.firstWhere((author) => author.name == book.author).bookWritten.add(book.isbn);
+    }
   }
 
-  // view a list of book
+  // View a list of books
   List<Book> viewAllBooks() {
     return books;
   }
 
-  // update a book by using sbin
+  // Update a book by using ISBN
   void updateBook(String isbn, Book updateBook) {
     for (var i = 0; i < books.length; i++) {
       if (books[i].isbn == isbn) {
         books[i] = updateBook;
+        return;
       }
     }
-    print('Book with isbn not found');
+    print('Book with ISBN not found');
   }
 
-  // delete book by isbn
+  // Delete book by ISBN
   void deleteBook(String isbn) {
     books.removeWhere((book) => book.isbn == isbn);
   }
 
-  // search book by title or author
+  // Search book by title or author
   List<Book> searchBooks({String? title, String? author}) {
     return books.where((book) {
-      return (title == null ||
-          book.title.contains(title) && author == null ||
-          book.author.contains(author!));
+      return (title == null || book.title.contains(title)) &&
+          (author == null || book.author.contains(author));
     }).toList();
   }
 
-  // lend a book to member and track due date
+  // Lend a book to member and track due date
   void lendBook(String isbn, String memberId, String dueDate) {
     for (Book book in books) {
       if (book.isbn == isbn) {
-        if (book.isLent) {
+        if (!book.isLent) {
           book.isLent = true;
           book.dueDate = dueDate;
           for (Member member in members) {
@@ -61,6 +68,7 @@ class LibraryManager {
           }
         } else {
           print('Book is already lent.');
+          return;
         }
       }
     }
@@ -76,10 +84,12 @@ class LibraryManager {
         for (Member member in members) {
           member.borrowed.remove(isbn);
         }
+        return;
       }
     }
     print('Book not found.');
   }
+
   // --------------------------Author----------------------------------------
 
   // Add new author to list
@@ -97,6 +107,7 @@ class LibraryManager {
     for (int i = 0; i < authors.length; i++) {
       if (authors[i].name == name) {
         authors[i] = updatedAuthor;
+        return;
       }
     }
     print('Author with name $name not found.');
@@ -108,6 +119,7 @@ class LibraryManager {
   }
 
   // --------------------------Member----------------------------------------
+
   // Add a new member to the list
   void addMember(Member member) {
     members.add(member);
@@ -123,6 +135,7 @@ class LibraryManager {
     for (int i = 0; i < members.length; i++) {
       if (members[i].memberId == memberId) {
         members[i] = updatedMember;
+        return;
       }
     }
     print('Member with ID $memberId not found.');
@@ -136,11 +149,11 @@ class LibraryManager {
   // Search for members by name or member ID
   List<Member> searchMembers({String? memberId}) {
     return members.where((member) {
-      return (memberId == null || member.memberId.contains(memberId));
+      return memberId == null || member.memberId.contains(memberId);
     }).toList();
   }
 
-  // Asyncronous Operations
+  // ---------------------- Asynchronous Operations -----------------------
 
   // Save data to files
   Future<void> saveData() async {
@@ -149,9 +162,9 @@ class LibraryManager {
       final authorFile = File('authors.json');
       final memberFile = File('members.json');
 
-      await bookFile.writeAsString(jsonEncode(books));
-      await authorFile.writeAsString(jsonEncode(authors));
-      await memberFile.writeAsString(jsonEncode(members));
+      await bookFile.writeAsString(jsonEncode(books.map((book) => book.toJson()).toList()));
+      await authorFile.writeAsString(jsonEncode(authors.map((author) => author.toJson()).toList()));
+      await memberFile.writeAsString(jsonEncode(members.map((member) => member.toJson()).toList()));
     } catch (e) {
       print('Error saving data: $e');
     }
